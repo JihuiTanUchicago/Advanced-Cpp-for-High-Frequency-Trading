@@ -32,8 +32,10 @@ long long sumMatrixBasic(const std::vector< std::vector<int> >& matrix) {
 long long sumMatrixOptimized(const std::vector< std::vector<int> >& matrix) {
     long long sum = 0;
     for (int i = 0; i < SIZE; ++i) {
+        // No need to access matrix[i] everytime if we do matrix[i][j]
         const std::vector<int>& rowVec = matrix[i];
         for (int j = 0; j < SIZE; ++j) {
+            // alternative to inline since logics of helper functions are simple
             sum += rowVec[j];
         }
     }
