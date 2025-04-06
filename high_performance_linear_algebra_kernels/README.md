@@ -50,6 +50,26 @@ Mean: 41.8us, Std Dev: 0.4ns
   139   154 
 ```
 
+compile with -O3 and -march=native
+```
+Mean: 33.4us, Std Dev: 16.7045ns
+6 15 
+
+Test 2: multiply_mv_col_major
+Mean: 25us, Std Dev: 20.4157ns
+6 15 
+
+Test 3: multiply_mm_naive
+Mean: 25.2us, Std Dev: 20.5757ns
+   58    64 
+  139   154 
+
+Test 4: multiply_mm_transposed_b
+Mean: 8.4us, Std Dev: 16.8ns
+   58    64 
+  139   154 
+```
+
 ### Cache Locality Analysis:
 - `multiply_mv_col_major` is expected to be faster than `multiply_mv_row_major` since it is accessing contiguous memory.
 - `multiply_mm_transposed_b` is expected to be faster than its naive counterpart, since both matrix A and B are accessing contiguous memory.
