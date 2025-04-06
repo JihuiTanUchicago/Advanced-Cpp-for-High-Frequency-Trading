@@ -1,4 +1,8 @@
 ### Output
+compile
+```
+clang++ -std=c++17 -O3 high_performance_linear_algebra_kernels.cpp -o high_performance_linear_algebra_kernels
+```
 ```
 Test 1: multiply_mv_row_major
 Mean: 50.2us, Std Dev: 16.9044ns
