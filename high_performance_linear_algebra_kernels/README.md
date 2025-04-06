@@ -1,4 +1,7 @@
-### Output
+### Team Member:
+Todd Tan (just myself)
+
+### Benchmarking
 compile with -O0
 ```
 clang++ -std=c++17 -O0 high_performance_linear_algebra_kernels.cpp -o high_performance_linear_algebra_kernels_with_O0
@@ -46,3 +49,23 @@ Mean: 41.8us, Std Dev: 0.4ns
    58    64 
   139   154 
 ```
+
+### Cache Locality Analysis:
+- `multiply_mv_col_major` is expected to be faster than `multiply_mv_row_major` since it is accessing contiguous memory.
+- `multiply_mm_transposed_b` is expected to be faster than its naive counterpart, since both matrix A and B are accessing contiguous memory.
+- Both expectations are confirmed through the benmark results above.
+
+
+### Unaligned vs Aligned memory 
+compile:
+```
+clang++ -std=c++17 -O0 memory_alignment.cpp -o memory_alignment
+```
+```
+Unaligned Memory:
+Average: 7634.4 us
+
+Aligned Memory (128-byte):
+Average: 5984.2 us
+```
+- Aligned memory is beneficial if aligned memory is no more than how much cache lines can hold. Too much aligned memory will introduce overheads.

@@ -108,19 +108,17 @@ void multiply_mm_transposed_b(const double* matrixA, int rowsA, int colsA,
     }
 }
 
-
-// Utility to print vectors and matrices
 void print_vector(const double* v, int size) {
     for (int i = 0; i < size; ++i)
         std::cout << v[i] << " ";
-    std::cout << "\n";
+    cout << "\n";
 }
 
 void print_matrix(const double* m, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j)
-            std::cout << std::setw(5) << m[i * cols + j] << " ";
-        std::cout << "\n";
+            cout << setw(5) << m[i * cols + j] << " ";
+        cout << "\n";
     }
 }
 
@@ -178,6 +176,12 @@ int main() {
     auto test4 = [&]() {
         multiply_mm_transposed_b(matrixA, rowsA, colsA, matrixB_T, rowsB, colsB, result4);
     };
+
+    // Test 5: tiled_multiply_mm
+    double* result5 = new double[rowsA * colsB];
+    auto test5 = [&]() {
+        tiled_multiply_mm(matrixA, rowsA, colsA, matrixB, rowsB, colsB, result5);
+    };
     
 
     cout << "Test 1: multiply_mv_row_major\n";
@@ -199,6 +203,11 @@ int main() {
     benchmark(test4, RUNS);
     print_matrix(result4, rowsA, colsB);  // Expected: [[58, 64], [139, 154]]
     delete[] result4;
+
+    cout << "\nTest 5: tiled_multiply_mm\n";
+    benchmark(test5, RUNS);
+    print_matrix(result5, rowsA, colsB);  // Expected: [[58, 64], [139, 154]]
+    delete[] result5;
 
     return 0;
 }
