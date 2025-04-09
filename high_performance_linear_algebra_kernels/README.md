@@ -1,6 +1,3 @@
-### Team Member:
-Todd Tan (just myself)
-
 ### Benchmarking
 compile with -O0
 ```
