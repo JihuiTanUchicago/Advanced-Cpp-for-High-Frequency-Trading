@@ -1,0 +1,41 @@
+toddtan@Todds-Laptop simple_local_order_book_and_core_trafing_infrastructure.cpp % ./main                                               
+[BID] 100.1 x 300
+update_bid(100.1, 300)
+[ASK] 100.2 x 250
+update_ask(100.2, 250)
+[BID] 100.15 x 200
+update_bid(100.15, 200)
+[ASK] 100.18 x 100
+update_ask(100.18, 100)
+[ASK] 100.18 x 60
+update_ask(100.18, 60)
+[BID] 100.1 x 0
+update_bid(100.1, 0)
+[ASK] 100.18 x 30
+update_ask(100.18, 30)
+[ASK] 100.18 x 0
+update_ask(100.18, 0)
+[ASK] 100.25 x 200
+update_ask(100.25, 200)
+[EXECUTION] Order 1 filled: 10
+Filling order 1 with quantity 10
+Order 1 partially filled
+[EXECUTION] Order 1 filled: 20
+Filling order 1 with quantity 20
+Order 1 partially filled
+[BID] 100.17 x 100
+update_bid(100.17, 100)
+[EXECUTION] Order 2 filled: 50
+Filling order 2 with quantity 50
+Order 2 partially filled
+[BID] 100.15 x 100
+update_bid(100.15, 100)
+[ASK] 100.22 x 150
+update_ask(100.22, 150)
+[EXECUTION] Order 2 filled: 50
+Filling order 2 with quantity 50
+Order 2 partially filled
+[BID] 100.2 x 300
+update_bid(100.2, 300)
+[ASK] 100.23 x 100
+update_ask(100.23, 100)
