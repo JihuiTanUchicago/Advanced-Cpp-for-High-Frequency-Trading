@@ -1,6 +1,5 @@
-/* ---------- hft_client.cpp  (multicast listener --> TCP responder) ---------- */
 #include <boost/asio.hpp>
-#include <charconv>          // fast from_chars
+#include <charconv>
 #include <array>
 #include <vector>
 #include <string_view>
@@ -10,22 +9,20 @@
 using boost::asio::ip::udp;
 using boost::asio::ip::tcp;
 
-/* ---------- constants ---------- */
 static constexpr char GROUP[]      = "239.255.0.1";
 static constexpr unsigned short PORT      = 3001;
 static constexpr unsigned short TCP_PORT  = 4000;
 static constexpr char NAME[]      = "ToddTan";
 
-static constexpr int MAX_SEC      = 10000;      // room for all symbols “SEC0001 … SEC9999”
-static constexpr int BUF_SZ       = 4096;       // UDP fragment buffer
+static constexpr int MAX_SEC      = 10000;
+static constexpr int BUF_SZ       = 4096;
 
-/* ---------- super-light context per challenge ---------- */
 struct ChallengeCtx {
     int  id{-1};
-    int  target_idx{-1};          // SEC#### → #### (1-based). -1 = unset
+    int  target_idx{-1};
     std::array<double,MAX_SEC+1> bid{}, ask{};
-    std::array<uint8_t,MAX_SEC+1> seen{};       // 0/1 bitmap
-    std::vector<int> touched;                   // which indices we filled this round
+    std::array<uint8_t,MAX_SEC+1> seen{};
+    std::vector<int> touched;
 
     // true when we know id, target, and have at least one quote for target
     bool ready() const noexcept {
@@ -40,7 +37,6 @@ struct ChallengeCtx {
     }
 };
 
-/* ---------- fast helpers ---------- */
 
 // convert “SECNNNN” to int NNNN  (no allocations / branches)
 static inline int ticker_to_index(std::string_view t) noexcept {
@@ -58,7 +54,6 @@ static inline double fast_atod(const char* begin,const char* end) noexcept {
     return std::strtod(buf,nullptr);
 }
 
-/* ---------- main ---------- */
 int main(){
     boost::asio::io_context io;
 
@@ -70,15 +65,13 @@ int main(){
     usock.bind(listen_ep);
     usock.set_option(boost::asio::ip::multicast::join_group(
                      boost::asio::ip::make_address(GROUP)));
-    // enlarge kernel buffers a bit
+
     usock.set_option(boost::asio::socket_base::receive_buffer_size(1<<20));
 
-    /* ----- persistent TCP connection (Nagle off) ----- */
     tcp::socket tsock(io);
     tsock.connect({boost::asio::ip::address_v4::loopback(),TCP_PORT});
     tsock.set_option(boost::asio::ip::tcp::no_delay(true));
 
-    /* ----- state ----- */
     ChallengeCtx ctx;
     std::string rb;              // rolling buffer for reassembly
 
@@ -89,13 +82,12 @@ int main(){
         std::size_t n = usock.receive_from(boost::asio::buffer(pkt),sender,0);
         rb.append(pkt,n);
 
-        /* ---- process complete lines ---- */
         std::size_t nl;
         while((nl = rb.find('\n')) != std::string::npos){
-            std::string_view line(rb.c_str(),nl);   // view – no copy
+            std::string_view line(rb.c_str(),nl);
             rb.erase(0,nl+1);
 
-            if(line.rfind("SEC|",0)==0){            // market quote
+            if(line.rfind("SEC|",0)==0){
                 // format: SEC|SEC0007|BID|92.9962|ASK|93.761
                 // cheap tokenisation by scanning for ‘|’
                 const char* p=line.data()+4;                 // after “SEC|”
@@ -112,12 +104,11 @@ int main(){
                 if(!ctx.seen[idx]) { ctx.seen[idx]=1; ctx.touched.push_back(idx); }
 
             } else if(line.rfind("CHALLENGE_ID:",0)==0){
-                ctx.id = std::stoi(std::string(line.substr(13))); // 13 = len(“CHALLENGE_ID:”)
+                ctx.id = std::stoi(std::string(line.substr(13)));
             } else if(line.rfind("TARGET:",0)==0){
                 ctx.target_idx = ticker_to_index(line.substr(7));
             }
 
-            /* ---- once everything ready, fire order immediately ---- */
             if(ctx.ready()){
                 int idx = ctx.target_idx;
                 char out[128];
@@ -126,8 +117,8 @@ int main(){
                          ctx.id,idx,ctx.bid[idx],ctx.ask[idx],NAME);
 
                 boost::asio::write(tsock,boost::asio::buffer(out,len));
-                std::cout<<"▶ sent "<<out;          // light stdout trace
-                ctx.reset();                        // prep for next round
+                std::cout<<"▶ sent "<<out; 
+                ctx.reset();
             }
         }
     }
