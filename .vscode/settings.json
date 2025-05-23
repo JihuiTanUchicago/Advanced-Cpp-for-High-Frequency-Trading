@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "__config": "cpp",
+        "iostream": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
+        "__hash_table": "cpp",
+        "vector": "cpp"
+    },
+    "cmake.sourceDirectory": "/Users/toddtan/Desktop/Records/personal_projects/Advanced-Cpp-for-High-Frequency-Trading/simeple_high_frequency_trading_system"
+}
