@@ -117,7 +117,7 @@ int main(){
                          ctx.id,idx,ctx.bid[idx],ctx.ask[idx],NAME);
 
                 boost::asio::write(tsock,boost::asio::buffer(out,len));
-                std::cout<<"▶ sent "<<out; 
+                // std::cout<<"▶ sent "<<out; 
                 ctx.reset();
             }
         }
